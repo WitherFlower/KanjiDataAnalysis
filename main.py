@@ -59,8 +59,10 @@ def main():
             break
 
     print(f"Added up to index { find(sorted_kanji, additional_kanji[-1]) }")
-    for kanji in additional_kanji:
+    for index, kanji in enumerate(additional_kanji):
         print(kanji, end="")
+        if (index + 1) % 50 == 0:
+            print()
 
 def find(list: list[tuple[str, int]], kanji: str):
     for i, v in enumerate(list):
