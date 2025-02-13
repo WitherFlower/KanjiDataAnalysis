@@ -35,14 +35,19 @@ def main():
     print()
 
     deck_kanji = read_deck()
+
+    corpus_count_deck = 0
+
     deck_kanji_sorted: list[tuple[str, int]] = list()
     for kanji in deck_kanji:
         index = find(sorted_kanji, kanji)
+        corpus_count_deck += kanji_data[kanji]
         deck_kanji_sorted.append((kanji, index))
 
     deck_kanji_sorted = sorted(deck_kanji_sorted, key=lambda x: x[1])
 
     pprint(deck_kanji_sorted[:10])
+    print("Deck kanji coverage : ", round(corpus_count_deck / corpus_count * 100, 2), "%")
 
     # Check that the deck contains all jouyou kanji
     # jouyou_kanji = read_jouyou()
@@ -51,12 +56,17 @@ def main():
 
     additional_kanji_count = 300
     additional_kanji: list[str] = list()
+    corpus_count_additional_kanji = corpus_count_deck
 
     for kanji in sorted_kanji:
         if find(deck_kanji_sorted, kanji[0]) == -1:
             additional_kanji.append(kanji[0])
+            corpus_count_additional_kanji += kanji_data[kanji[0]]
         if len(additional_kanji) == additional_kanji_count:
             break
+
+    print(f"Deck kanji coverage with {additional_kanji_count} additional kanji : ",
+          round(corpus_count_additional_kanji / corpus_count * 100, 2), "%")
 
     print(f"Added up to index { find(sorted_kanji, additional_kanji[-1]) }")
     for index, kanji in enumerate(additional_kanji):
@@ -77,7 +87,7 @@ def sorted_list(kanji_data: dict[str, int]):
 
     return sorted(kanji_list, key=compare)
 
-def read_kanji_data():
+def read_kanji_data() -> dict[str, int]:
     kanji_data: dict[str, int] = dict()
 
     with open("./aozora_characters.csv", encoding="utf-8") as aozora_characters:
